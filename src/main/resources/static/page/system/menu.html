@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<meta http-equiv="Cache-Control" content="no-cache" />
+	<title>菜单管理</title>
+	<link href="../../asset/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../../asset/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
+	<link href="../../asset/jquery-confirm/css/jquery-confirm.min.css" rel="stylesheet" />
+	<style>
+		.container-fluid{
+			margin-top:2%;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- 查询功能 -->
+	<div class="panel-body">
+		<form class="form-horizontal user" id="menu_params">
+
+			<div class="form-group col-md-4">
+				<label class="col-sm-4 control-label">父级菜单</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="parentNumber"/>
+				</div>
+			</div>
+
+			<div class="form-group col-md-4">
+				<label class="col-sm-4 control-label">子级菜单</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="sonName"/>
+				</div>
+			</div>
+
+
+			<div class="form-group col-md-1"style="margin-left: 1%">
+				<button type="button" class="btn btn-primary btn-block" onclick="search()">查询</button>
+			</div>
+			<div class="form-group col-md-1" style="margin-left: 1%">
+				<button type="button" class="btn btn-default btn-block" onclick="clearForm()">重置</button>
+			</div>
+
+
+
+		</form>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<!-- 按钮触发模态框 -->
+				<div class="btn-group">
+					<button id="btn_read" type="button" class="btn btn-info">
+						<span class="glyphicon glyphicon-zoom-in" aria-hidden="true">查看</span>
+					</button>
+					<button id="btn_add" type="button" class="btn btn-success">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true">新增</span>
+					</button>
+					<button id="btn_edit" type="button" class="btn btn-warning">
+						<span class="glyphicon glyphicon-pencil" aria-hidden="true">修改</span>
+					</button>
+					<button id="btn_delete" type="button" class="btn btn-danger">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true">删除</span>
+					</button>
+				</div>
+				<table id="table"></table>
+			</div>
+		</div>
+	</div>
+
+	<!-- 按钮触发模态框 -->
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="showModal" tabindex="-1" user="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+					<h4 class="modal-title" id="myModalLabel"></h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" user="form" id="menuForm">
+
+						<input type="hidden" class="form-control" name="id" id="id"/>
+
+						<div class="form-group">
+							<label for="parent_number" class="col-sm-2 control-label">父级菜单编号</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" name="parentNumber" id="parent_number" placeholder="请输入父级菜单编号" onblur="check()" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="parent_name" class="col-sm-2 control-label">父级菜单名称</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" name="parentName" id="parent_name" placeholder="请输入菜单链接" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="son_order" class="col-sm-2 control-label">子级菜单编号(顺序)</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" name="sonOrder" id="son_order" placeholder="请输入菜单图标" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="son_name" class="col-sm-2 control-label">子级菜单名称</label>
+							<div class="col-sm-10">
+								<select class="form-control" name="sonName" id="son_name" onchange="refreshOrder(this.value)">
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="son_rel" class="col-sm-2 control-label">链接</label>
+							<div class="col-sm-10">
+								<select class="form-control" name="sonRel" id="son_rel">
+								</select>
+							</div>
+						</div>
+
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭 </button>
+					<button type="button" class="btn btn-primary" onclick="submit();" id="subButton">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="../../asset/jquery/jquery-3.2.1.min.js"></script>
+	<!--权限控制-->
+	<script src="../../asset/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../../asset/bootstrap-table/bootstrap-table.min.js"></script>
+	<script src="../../asset/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+	<script src="../../asset/jquery-confirm/js/jquery-confirm.min.js"></script>
+	<script>
+
+		$(function () {
+			loadTable();
+		});
+
+
+		var $table = $("#table");
+		function loadTable() {
+			$table.bootstrapTable('destroy');
+			$table.bootstrapTable({
+				url: '/menu/queryAll',         		//请求后台的URL（*）
+				method: 'post',                     //请求方式（*）
+				toolbar: '#toolbar',                //工具按钮用哪个容器
+				striped: true,                      //是否显示行间隔色
+				cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+				pagination: true,                   //是否显示分页（*）
+				//showFooter: true,
+				sortable: false,                    //是否启用排序
+				sortOrder: "asc",                   //排序方式
+				sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+				pageNumber: 1,                      //初始化加载第一页，默认第一页
+				pageSize: 10,                       //每页的记录行数（*）
+				pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+				//search: false,                    //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+				//contentType: "application/json; charset=UTF-8",//  默认是application/x-www-form-urlencoded;charset=utf-8
+				contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+				strictSearch: true,
+				showColumns: true,                  //是否显示所有的列（显示或者隐藏自定义列）
+				showRefresh: true,                  //是否显示刷新按钮
+				minimumCountColumns: 3,             //最少允许的列数
+				clickToSelect: true,                //是否启用点击选中行
+				height: 700,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+				//uniqueId: "no",                   //每一行的唯一标识，一般为主键列
+				showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+				//cardView: false,                  //是否显示详细视图
+				//detailView: false,                //是否显示父子表
+				queryParamsType: '',
+				queryParams: function (params) {
+					var map = {
+						pageNumber: params.pageNumber,
+						pageSize: params.pageSize
+					};
+					$("#menu_params input").each(function(){
+						/*if($(this).val()!=""){
+							map[""+$(this).attr('name')] = $(this).val();
+						}*/
+						map[""+$(this).attr('name')] = $(this).val();
+					});
+					return map;
+					/*var map = '{"pageNumber":'+ params.pageNumber + ','+'"pageSize":'+ params.pageSize +'}';
+					return map;*/
+
+				},//传递参数（*）
+				columns: [
+
+					{
+						field : 'parentNumber',
+						title: '父级菜单编号',
+						align : 'center',
+						valign : 'middle'
+					},
+					{
+						field : 'parentName',
+						title: '父级菜单名称',
+						align : 'center',
+						valign : 'middle'
+					},
+					{
+						field : 'sonOrder',
+						title: '子级菜单编号',
+						align : 'center',
+						valign : 'middle'
+					},
+					{
+						field : 'sonName',
+						title: '子级菜单名称',
+						align : 'center',
+						valign : 'middle'
+					},
+					{
+						field : 'sonRel',
+						title: '子级菜单链接',
+						align : 'center',
+						valign : 'middle'
+					},
+					{
+						field : 'menuIcon',
+						title: '菜单图标',
+						align : 'center',
+						valign : 'middle'
+					},
+					{
+						field : 'createTime',
+						title: '创建时间',
+						align : 'center',
+						valign : 'middle',
+						formatter: function (value) {
+							/*if(value!=null){
+								// return new Date(value).toLocaleString('chinese',{hour12:false}).replace(/\//g,"-");
+							}*/
+							if(value) {
+								var unixTimestamp = new Date(value);
+								return unixTimestamp.toLocaleString();//显示：年月日 时分
+								// return unixTimestamp.toLocaleDateString();//显示：年月日
+								// return unixTimestamp.toLocaleTimeString();//显示：时分秒
+							}
+						}
+					},
+					{
+						field : 'createId',
+						title: '创建人',
+						align : 'center',
+						valign : 'middle',
+						formatter: function (value) {
+							if(value == 1){
+								return 'admin';
+							}
+							return value;
+						}
+					}
+				],
+				/*rowStyle: function (row, index) {
+					var classesArr = ['success', 'info'];
+					var strclass = "";
+					if (index % 2 === 0) {//偶数行
+						strclass = classesArr[0];
+					} else {//奇数行
+						strclass = classesArr[1];
+					}
+					return { classes: strclass };
+				},//隔行变色*/
+
+			});
+
+		}
+
+		//  查询
+		function search() {
+			//$table.bootstrapTable('destroy');
+			$table.bootstrapTable('refresh');
+		}
+
+		//  重置
+		function clearForm() {
+			$("#menu_params .input").val("");
+			search();
+		}
+
+
+
+	</script>
+</body>
+
+</html>

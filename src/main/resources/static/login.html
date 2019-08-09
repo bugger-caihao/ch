@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <title>后台管理系统</title>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="asset/css/view.css">
+</head>
+
+<body>
+<div class="modal1" id="modal1_login">
+    <div class="logotop">后台管理系统<!--<img src="images7/logo.png"/>--></div>
+    <div class="modal1-login loginbox1">
+
+        <ul>
+            <li class="yhdl_title">用户登录</li>
+            <li><input name="userName" type="text" id="userName" class="loginuser" placeholder="请输入用户名" ></li>
+            <li><input name="userPassword" type="password" id="userPassword" class="loginpwd" placeholder="请输入密码" ></li>
+            <li><label><input id="checkbox" type="checkbox" checked="checked"><span>记住密码</span></label></li>
+            <li>
+                <div ><input style="width: 380px;border-radius: 4px;margin-top: 10px;" id="btnLogin" name="Submit3" type="submit" class="loginbtn" value="登录"></div>
+            </li>
+            <li><div class="qdl" id="register">没有账号?请注册</div></li>
+        </ul>
+
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="asset/jquery/jquery-3.2.1.min.js"></script>
+<link href="asset/bootstrap/css/bootstrap4.min.css" rel="stylesheet"/>
+<link href="asset/jquery-confirm/css/jquery-confirm.min.css" rel="stylesheet"/>
+<script src="asset/jquery-confirm/js/jquery-confirm.min.js"></script>
+
+<script type="text/javascript">
+
+    var storage = window.localStorage;
+
+    $(function () {
+
+        $("input").attr("autocomplete","off");
+        if(storage.user != null){
+            $("#userName").val(JSON.parse(storage.user).userName);
+            $("#userPassword").val(JSON.parse(storage.user).userPassword);
+        }
+    });
+
+    //  给登录按钮条件一个点击事件
+    /*$("#btnLogin").on("click", function () {
+        doLogin()
+    })*/
+    $("#btnLogin").click(function () {
+        doLogin();
+    });
+
+    function doLogin(){
+        var userName = $("#userName").val();
+        var userPassword = $("#userPassword").val();
+        if(!userName){
+            //  要先获取焦点再来alert，focus()方法才能够生效
+            $("#userName").focus();
+            $.alert("用户名不可为空！");
+            return;
+        }
+        if(!userPassword){
+            $("#userPassword").focus();
+            $.alert("密码不可为空");
+            return;
+        }
+        var user = {"userName": userName, "userPassword": userPassword};
+        $.ajax({
+            type: "post",
+            url: "doLogin",
+            data: JSON.stringify(user),
+            dataType: "json",
+            contentType:"application/json",
+            success: function (result) {
+                if(result.rows){
+                    if($("#checkbox").is(":checked")){
+                        //  记住密码复选框被勾选，将账号密码存放到localStorage中
+                        storage.setItem("user", JSON.stringify(user));
+                    }else {
+                        storage.removeItem("user");
+                    }
+                    //  走前端跳转的目的是为了拦截器验证session中有没有用户信息
+                    window.location.href = "index";
+                }else {
+                    $.alert("账号或密码错误！！");
+                }
+            }
+        });
+
+    }
+
+    //  注册账号密码
+    $("#register").click(function () {
+        window.location.href = "register";
+    });
+
+
+</script>
+
+</body>
+</html>

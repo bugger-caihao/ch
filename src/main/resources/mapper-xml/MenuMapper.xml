@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ch.mapper.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ch.entity.Menu">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="parent_number" property="parentNumber" jdbcType="INTEGER"/>
+        <result column="parent_name" property="parentName" jdbcType="VARCHAR"/>
+        <result column="son_order" property="sonOrder" jdbcType="INTEGER"/>
+        <result column="son_name" property="sonName" jdbcType="VARCHAR"/>
+        <result column="son_rel" property="sonRel" jdbcType="VARCHAR"/>
+        <result column="menu_icon" property="menuIcon" jdbcType="VARCHAR"/>
+        <result column="enable" property="enable" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+        <result column="create_id" property="createId" jdbcType="INTEGER"/>
+        <result column="update_time" property="updateTime" jdbcType="DATE"/>
+        <result column="update_id" property="updateId" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, parent_number, parent_name, son_order, son_name, son_rel, menu_icon, enable, create_time, create_id, update_time, update_id
+    </sql>
+
+
+    <select id="findParentMenu" resultType="com.ch.entity.Menu">
+        select distinct m.parent_number,parent_name from menu m where m.enable = 1
+    </select>
+
+
+    <select id="findSonMenu" resultType="com.ch.entity.Menu">
+        select m.id,m.son_name,son_rel,menu_icon from menu m
+        where m.parent_number = #{parentNumber,jdbcType=VARCHAR}
+        and m.enable = 1
+    </select>
+
+</mapper>

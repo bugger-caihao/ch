@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ch.mapper.UserInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ch.entity.UserInfo">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="user_password" property="userPassword" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, user_name, user_password, create_time, modify_time
+    </sql>
+
+
+    <select id="login" resultType="com.ch.entity.UserInfo">
+        select t.* from user_info t
+        where t.user_name = #{userName,jdbcType=VARCHAR}
+        and t.user_password = #{userPassword,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="selectAccount" resultType="com.ch.entity.UserInfo">
+        select t.* from user_info t
+        where t.user_name = #{userName,jdbcType=VARCHAR}
+    </select>
+
+
+    <insert id="insertAccount" useGeneratedKeys="true" >
+        insert user_info(user_name, user_password)
+        values (
+             #{userName,jdbcType=VARCHAR},
+             #{userPassword,jdbcType=VARCHAR}
+        )
+    </insert>
+
+</mapper>

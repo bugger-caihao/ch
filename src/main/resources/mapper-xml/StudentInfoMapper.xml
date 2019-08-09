@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ch.mapper.StudentInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ch.entity.StudentInfo">
+        <id column="student_id" property="studentId" />
+        <result column="student_name" property="studentName" />
+        <result column="student_sex" property="studentSex" />
+        <result column="student_address" property="studentAddress" />
+        <result column="student_age" property="studentAge" />
+        <result column="create_time" property="createTime" />
+        <result column="create_user" property="createUser" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        student_id, student_name, student_sex, student_address, student_age, create_time, create_user
+    </sql>
+
+</mapper>

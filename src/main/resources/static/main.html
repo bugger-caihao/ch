@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <title>系统主页</title>
+
+<!--    <meta name="keywords" content="搜索关键字">
+    <meta name="description" content="页面描述">-->
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="asset/css/font-awesome.min.css" rel="stylesheet">
+    <link href="asset/css/style.min.css" rel="stylesheet">
+    <link href="asset/css/animate.min.css" rel="stylesheet">
+    <link href="asset/jquery-confirm/css/jquery-confirm.min.css" rel="stylesheet" />
+
+    <style>
+        .border-bottom{
+            height:60px
+        }
+        h2{
+            float: right;
+            margin-right: 1%;
+            color: #BFBB00;
+        }
+        #btn_modify:hover{
+            background: #f2f2f2!important;
+            cursor: pointer!important;
+        }
+        /*解决浏览器记住账号密码以后，输入框变黄的问题。*/
+        input:-webkit-autofill,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+        input[type=text]:focus, input[type=password]:focus, textarea:focus {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+    </style>
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<div id="wrapper">
+    <!--左侧导航开始-->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="nav-close"><i class="fa fa-times-circle"></i>
+        </div>
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <span><img alt="image" class="img-circle" src="asset/img/navigation/logo1.png" style="width: 50%;"/></span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear">
+                                <span class="block m-t-xs" id="name"></span>
+                                </span>
+                        </a>
+                        <!--<ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            &lt;!&ndash;<li>
+                                <a class="J_menuItem" href="form_avatar.html">修改头像</a>
+                            </li>&ndash;&gt;
+                            &lt;!&ndash;<li>
+                                <a href="javascript:modify();">修改密码</a>
+                            </li>&ndash;&gt;
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:logout();">安全退出</a>
+                            </li>
+                        </ul>-->
+                    </div>
+                    <div class="logo-element">
+                    </div>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-home"></i>
+                        <span class="nav-label">系统管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="" >用户管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="page/system/menu.html" >菜单管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-th"></i>
+                        <span class="nav-label">上传管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="" >图片上传</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="" >excel上传</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- 动态的添加菜单 -->
+
+            </ul>
+        </div>
+    </nav>
+    <!--左侧导航结束-->
+    <!--右侧部分开始-->
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <h2>麦圈婚庆管理系统</h2>
+            </nav>
+        </div>
+        <div class="row content-tabs">
+            <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i>
+            </button>
+            <nav class="page-tabs J_menuTabs">
+                <div class="page-tabs-content">
+                    <!--默认展示页面-->
+                    <!--<a href="javascript:;" class="active J_menuTab" data-id="page/system/welcome.html">
+                        系统首页
+                    </a>-->
+                </div>
+            </nav>
+            <a href="javascript:modify()">
+                <div class="btn-group roll-nav roll-right" id= "btn_modify" style="background: #fff;">
+                    <i class="fa fa-pencil"></i>修改密码
+                </div>
+            </a>
+            <a href="javascript:logout()" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i>退出</a>
+
+        </div>
+        <div class="row J_mainContent" id="content-main">
+            <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="page/system/welcome.html" frameborder="0" data-id="page/system/welcome.html" seamless></iframe>
+        </div>
+        <div class="footer">
+            <div class="pull-right">&copy; 2018-2019 <a href="#">管理系统</a>
+            </div>
+        </div>
+    </div>
+    <!--右侧部分结束-->
+
+    <!-- 按钮触发模态框 -->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="showModal" tabindex="-1" user="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+                    <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form class="form-horizontal" user="form" id="userForm">
+
+                        <div class="form-group">
+                            <label for="oldPassword" class="col-sm-2 control-label">原密码:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control user" name="oldPassword" id="oldPassword" placeholder="请输入原始密码"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword" class="col-sm-2 control-label">新密码:</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control user" name="newPassword" id="newPassword" placeholder="请输入新的登录密码" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassWord1" class="col-sm-2 control-label">新密码:</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control user" id="newPassword1" placeholder="请再次输入新的登录密码" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="submit();" id="subButton">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--<script src="asset/jquery/jquery-3.2.1.min.js"></script>-->
+<script src="asset/jquery/jquery.min.js"></script>
+<!--<script src="asset/js/main.js"></script>-->
+<script src="asset/bootstrap/js/bootstrap.min.js"></script>
+<script src="asset/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="asset/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="asset/plugins/layer/layer.min.js"></script>
+<script src="asset/js/hplus.min.js"></script>
+<script src="asset/js/contabs.min.js"></script>
+<script src="asset/jquery-confirm/js/jquery-confirm.min.js"></script>-->
+<script>
+
+
+    $(function () {
+        //  将自动填充属性状态置为 “off”
+        $("input").attr("autocomplete", "off");
+
+        /*var menuPList;//  父级菜单集合
+        var menuCList;//  子集菜单集合
+        //  首先查出数据库中可用的父级菜单的集合
+        $.ajax({
+            type : "GET",
+            url : "/menu/findParentMenu",
+            dataType : "json",
+            async : false,
+            success : function(result) {
+                menuPList = eval(result.rows);
+            }
+        });
+
+        var strP="<li>"
+                + "<a href='#'>"
+                + "<i class='fa fa-home'></i>"
+                + "<span class='nav-label'>系统导航</span>"
+                + "<span></span>"
+                + "</a>"
+                + "</li>";
+        $("#side-menu").append(strP);
+
+        //  遍历父级菜单集合
+        $.each(menuPList, function (index, data) {
+            var pNumber = data.parentNumber;//  父级菜单编号
+            //  根据父级菜单编号去查子级菜单相关信息
+            $.ajax({
+                type : "GET",
+                url : "menu/findSonMenu",
+                data:{parentNumber: pNumber},
+                dataType : "json",
+                async : false,
+                success : function(result) {
+                    menuCList = eval(result.rows);
+                }
+            });
+
+            strP = "<li id='menu"+data.parentNumber+"'>"
+                    + "<a href='#collapse"+pNumber+"'>"
+                    + "<span class='nav-label'>"+data.parentName+"</span>"
+                    + "<span class='fa arrow'></span>"
+                    + "</a>"
+                    + "<\/li>";
+            $("#side-menu").append(strP);
+
+            //  有子级菜单
+            var strC ="<ul id='collapse"+pNumber+"' class='nav nav-second-level collapse'>";
+            //  遍历子级菜单集合
+            $.each(menuCList, function (indexC, dataC) {
+
+                strC += "<li>"
+                        +  "<a class='J_menuItem' href='"+dataC.sonRel+"' id='menuC"+dataC.id+"'>"
+                        +  "<i class='"+ dataC.menuIcon +"'></i>"
+                        +  "<span>"+dataC.sonName+"</span>"
+                        +  "</a>"
+                        +  "<\/li>";
+            });
+            strC += "</ul>";
+            $("#menu"+pNumber).append(strC);
+
+        });*/
+
+    });
+
+    //  给修改密码添加一个点击事件，弹出修改密码的模态框
+   function modify() {
+       $("input").val("");
+       //  弹出模态框
+       $("#showModal").modal("show");
+   }
+    
+    //  提交新密码
+    function submit() {
+        var oldPw = $("#oldPassword").val().trim();
+        var newPw = $("#newPassword").val().trim();
+        var otherNewPw = $("#newPassword1").val().trim();
+        if(oldPw == ""){
+            $("#oldPassword").focus();
+            $.alert("请输入原密码");
+            return;
+        }
+        if(newPw == ""){
+            $("#newPassword").focus();
+            $.alert("请输入新密码");
+            return;
+        }
+        if(otherNewPw == ""){
+            $("#newPassword1").focus();
+            $.alert("请再次输入新密码");
+            return;
+        }
+        if(newPw != otherNewPw){
+            $("#newPassword1").focus();
+            $.alert("两次输入的新密码不一致，请重新输入");
+            return;
+        }
+        if(newPw == oldPw){
+            $("#newPassword").focus();
+            $.alert("新密码不得和原密码相同");
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: "/modifyPw",
+            data: $("#userForm").serialize(),
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                if(result.code == '0000'){
+                    $("#showModal").modal("hide");
+                    $.confirm({
+                        title: '密码修改成功',
+                        content: '3秒后自动跳转……',
+                        autoClose: '确定|3000',
+                        buttons: {
+                            '确定': function () {
+                                window.location.href = "/";
+                            },
+                        }
+                    });
+                }else {
+                    $.alert(result.msg);
+                    $("input").val("");
+                }
+            }
+        });
+    }
+
+    //  退出登录
+    function logout() {
+       $.ajax({
+           url: "logout",
+           type: "get",
+           data: {},
+           dataType: "json",
+           async: false, //同步
+           success: function (result) {
+               window.location.href = "/"; //返回到登陆页面
+               window.localStorage.removeItem("user");//清除localStorage中的user信息，登陆页面就没有回填账号密码，就算是勾选记住账号也没有回填      
+           },
+           error: function () {
+               $.alert("系统故障，请联系管理员！");
+               
+           }
+       });
+    }
+
+
+</script>
+</body>
+</html>

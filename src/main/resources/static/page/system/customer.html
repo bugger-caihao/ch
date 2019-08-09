@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <title>客户管理</title>
+    <link href="../asset/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../asset/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="../asset/jquery-confirm/css/jquery-confirm.min.css" rel="stylesheet" />
+    <style>
+        .container-fluid{
+            margin-top:2%;
+        }
+        /*解决浏览器记住账号密码以后，输入框变黄的问题。*/
+        input:-webkit-autofill,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+        input[type=text]:focus, input[type=password]:focus, textarea:focus {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- 查询功能 -->
+    <div class="panel-body">
+        <form class="form-horizontal customer" id="customer">
+
+            <div class="form-group col-md-4">
+                <label class="col-sm-4 control-label">客户姓名</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="customerName"/>
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label class="col-sm-4 control-label">客户电话</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="phoneNumber"/>
+                </div>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label class="col-sm-4 control-label">客户类型</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="customerStatus">
+                        <option value="">请选择客户类型</option>
+                        <option value="1">未定客户</option>
+                        <option value="2">已定客户</option>
+                        <option value="3">已完成客户</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group col-md-1"style="margin-left: 1%">
+                <button type="button" class="btn btn-primary btn-block" onclick="search()">查询</button>
+            </div>
+            <div class="form-group col-md-1" style="margin-left: 1%">
+                <button type="button" class="btn btn-default btn-block" onclick="reset()">重置</button>
+            </div>
+
+
+
+        </form>
+    </div>
+
+    <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- 按钮触发模态框 -->
+                    <div class="btn-group">
+                        <button id="btn_edit" type="button" class="btn btn-warning">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true">修改</span>
+                        </button>
+                        <button id="btn_read" type="button" class="btn btn-info">
+                            <span class="glyphicon glyphicon-zoom-in" aria-hidden="true">查看购物车</span>
+                        </button>
+                        <button id="btn_delete" type="button" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true">删除</span>
+                        </button>
+                    </div>
+                    <table id="table"></table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- 按钮触发模态框 -->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="customerForm">
+
+                        <input type="hidden" class="form-control" name="id" id="id"/>
+
+                        <div class="form-group">
+                            <label for="customer_name" class="col-sm-4 control-label">客户姓名</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="customerName" id="customer_name" placeholder="请输入客户姓名" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone_number" class="col-sm-4 control-label">客户电话</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="phoneNumber" id="phone_number" placeholder="请输入手机号" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customer_status" class="col-sm-4 control-label">客户类型</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="customerStatus" id="customer_status">
+                                    <option value="">请选择客户类型</option>
+                                    <option value="1">未定客户</option>
+                                    <option value="2">已定客户</option>
+                                    <option value="3">已完成客户</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="remark" class="col-sm-4 control-label">特殊事项</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="remark" id="remark" placeholder="请输入特殊事项" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="visit_date" class="col-sm-4 control-label">来访日期</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="visitDate" id="visit_date" disabled/>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭 </button>
+                    <button type="button" class="btn btn-primary" onclick="submit();" id="subButton">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 按钮触发模态框 -->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="showModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times;</button>
+                    <h4 class="modal-title">查看购物车</h4>
+                </div>
+                <div class="modal-body">
+
+                    <table id="shopTable"></table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭 </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../asset/jquery/jquery-3.2.1.min.js"></script>
+    <!--权限控制-->
+    <script src="../asset/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../asset/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="../asset/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="../asset/jquery-confirm/js/jquery-confirm.min.js"></script>
+
+    <script>
+        $(function(){
+            $(":text").attr("autocomplete","off");
+            getLoginInfo();
+        })
+
+        function getLoginInfo(){
+            $.ajax({
+                type : "GET",
+                url : "../getLoginInfo",
+                data : {},
+                dataType : "json",
+                async : false,
+                cache:false,
+                success : function(result) {
+                    if(result.status=="000"){
+                        if(result.data.userType==1){
+                            $("#btn_edit").remove();
+                            $("#btn_delete").remove();
+                        }
+                    }else{
+                        window.top.location.href="login";
+                    }
+                }
+            });
+        }
+
+        $("#showModal").on("hidden.bs.modal", function() {
+            /*$(this).removeData("bs.modal");*/
+            $("#showModal input").val('');
+        });
+
+        //按条件查询
+        function search(){
+            loadtable();
+        }
+
+        //重置搜索框
+        function reset(){
+            $("#customer")[0].reset();
+        }
+
+        function submit(){
+            if($("#customer_name").val().trim()==""){
+                $.alert("用户姓名不能为空！");
+                return;
+            }
+            if($("#phone_number").val().trim()==""){
+                $.alert("用户电话不能为空！");
+                return;
+            }
+            $.ajax({
+                type : "POST",
+                url : "../../customer/saveOrUpdate",
+                data : $("#customerForm").serialize(),
+                dataType : "json",
+                async : false,
+                success : function(result) {
+                    if (result.status=='000'){
+                        $("#showModal").modal('hide');
+                        $.alert("提交成功！");
+                        $table.bootstrapTable('refresh');
+                    }else{
+                        $.alert("提交成功！");
+                    }
+                }
+            });
+        }
+
+
+        $("#btn_edit").on("click", function() {
+            var selectRows=$table.bootstrapTable('getAllSelections');
+            if(selectRows==null||selectRows.length==0){
+                $.alert("请勾选一条数据！");
+            }else if(selectRows.length>1){
+                $.alert("只能勾选一条数据！");
+            }else{
+                var row = selectRows[0];
+                $("#myModalLabel").html("修改客户");
+                //给form表单赋值。
+                $("#id").val(row.id);
+                $("#customer_name").val(row.customerName);
+                $("#phone_number").val(row.phoneNumber);
+                $("#customer_status").val(row.customerStatus);
+                $("#remark").val(row.remark);
+                $("#visit_date").val(new Date(row.visitDate).format("yyyy-MM-dd"));
+                $("#showModal").modal('show');
+                $("#subButton").show();
+            }
+        });
+
+        $("#btn_read").on("click", function() {
+            var selectRows=$table.bootstrapTable('getAllSelections');
+            if(selectRows==null||selectRows.length==0){
+                $.alert("请勾选一条数据！");
+            }else if(selectRows.length>1){
+                $.alert("只能勾选一条数据！");
+            }else{
+                var row = selectRows[0];
+                shopLoadTable(row.id);
+                $("#showModal1").modal('show');
+            }
+        });
+
+        $("#btn_delete").on("click", function() {
+            var selectRows=$table.bootstrapTable('getAllSelections');
+            if(selectRows==null||selectRows.length==0) {
+                $.alert("请勾选要删除的记录！");
+                return;
+            }
+            var ids = "";
+            var i=0;
+            while(i<selectRows.length){
+                if(selectRows[i].enable==0){
+                    $.alert("已删除的客户不能被删除");
+                    return false;
+                }
+                ids +=selectRows[i].id;
+                if(i!=selectRows.length-1){
+                    ids +=",";
+                }
+                i++;
+            }
+            $.confirm({
+                title: '删除!',
+                content: '是否确认删除?',
+                buttons: {
+                    '确定': function () {
+                        delByIds(ids);
+                    },
+                    '取消': function () {
+
+                    }
+                }
+            });
+        });
+
+        function delByIds(ids){
+            $.ajax({
+                type : "post",
+                url : "../../customer/delete",
+                data : {ids:ids},
+                dataType : "json",
+                async : false,
+                success : function(result) {
+                    if (result.status=='000'){
+                        $.alert("删除成功!");
+                        $table.bootstrapTable('refresh');
+                    }else{
+                        $.alert("删除失败!");
+                    }
+                }
+            });
+        }
+
+
+        /*加载表格*/
+        var $table = $("#table");
+        loadtable();
+        function loadtable(){
+            $table.bootstrapTable('destroy');
+            $table.bootstrapTable({
+                columns : [ {
+                    field : 'state',
+                    checkbox : true,
+                    align : 'center',
+                    valign : 'middle'
+                }, {
+                    title: '序号',//标题  可不加
+                    align : 'center',
+                    valign : 'middle',
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    }
+                },{
+                    title : '客户姓名',
+                    field : 'customerName',
+                    align : 'center',
+                    valign : 'middle'
+                }, {
+                    title : '客户电话',
+                    field : 'phoneNumber',
+                    align : 'center',
+                    valign : 'middle'
+                },{
+                    title : '上次来访日期',
+                    field : 'visitDate',
+                    align : 'center',
+                    valign : 'middle',
+                    formatter:function(value){
+                        return new Date(value).format("yyyy-MM-dd");
+                    }
+                },{
+                    title : '特殊事项',
+                    field : 'remark',
+                    align : 'center',
+                    valign : 'middle'
+                },{
+                    title : '客户类型',
+                    field : 'customerStatus',
+                    align : 'center',
+                    valign : 'middle',
+                    formatter:function(value){
+                        if(value==1){
+                            return "未定客户";
+                        }else if(value==2){
+                            return "已定客户";
+                        }else if(value==2){
+                            return "已完成客户";
+                        }
+                    }
+                }/*,{
+                    title : '所属公司',
+                    field : 'companyName',
+                    align : 'center',
+                    valign : 'middle'
+                }*/],
+                url : '../../customer/query',
+                sidePagination : 'server',
+                idField : "id",
+                contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+                toolbar: '#toolbar',                       //工具按钮用哪个容器
+                striped: true,                            //是否显示行间隔色
+                cache: false,                              //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                          //是否显示分页（*）
+                sortable: true,                           //是否启用排序
+                sortOrder: "asc",                          //排序方式
+                clickToSelect: true,						//点击行选中
+                method: 'GET',
+                //height: 550,
+                pageNumber : 1,
+                pageSize : 10,
+                pageList : [10,20,50,100],
+                showFooter : false,
+                queryParamsType:'',/* queryParamsType的默认值为 'limit',在默认情况下传给服务端的参数为:offset,limit,sort设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber */
+                queryParams : function(params) {
+                    var map = {
+                        pageNumber: params.pageNumber,//当前页码
+                        pageSize: params.pageSize,//页面大小
+                    };
+                    $(".customer input,.customer select").each(function(){
+                        if($(this).val()!=""){
+                            map[""+$(this).attr('name')] = $(this).val();
+                        }
+                    });
+                    return map;
+                },
+            });
+        }
+
+        /*加载表格*/
+        var shopTable = $("#shopTable");
+        function shopLoadTable(customerId){
+            shopTable.bootstrapTable('destroy');
+            shopTable.bootstrapTable({
+                columns : [
+                    {
+                        field : 'state',
+                        checkbox : true,
+                        align : 'center',
+                        valign : 'middle'
+                    },{
+                        title: '序号',//标题  可不加
+                        align : 'center',
+                        valign : 'middle',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    }, {
+                        title : '信息',
+                        field : 'fileType',
+                        align : 'center',
+                        valign : 'middle',
+                        formatter:function(value){
+                            if(value==3){
+                                return "套餐";
+                            }else {
+                                return "信息";
+                            }
+                        }
+                    }, {
+                        title : '信息类型',
+                        field : 'typeString',
+                        align : 'center',
+                        valign : 'middle',
+                    }, {
+                        title : '描述',
+                        field : 'description',
+                        align : 'center',
+                        valign : 'middle'
+                    }, {
+                        title : '价格',
+                        field : 'price',
+                        align : 'center',
+                        valign : 'middle'
+                    }],
+                url : '../manageShow/shop',
+                sidePagination : 'server',
+                idField : "id",
+                contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+                toolbar: '#toolbar',                       //工具按钮用哪个容器
+                striped: true,                            //是否显示行间隔色
+                cache: false,                              //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                          //是否显示分页（*）
+                sortable: true,                           //是否启用排序
+                sortOrder: "asc",                          //排序方式
+                clickToSelect: true,						//点击行选中
+                method: 'GET',
+                //height: 550,
+                pageNumber : 1,
+                pageSize : 10,
+                pageList : [10,20,50,100],
+                showFooter : false,
+                queryParamsType:'',/* queryParamsType的默认值为 'limit',在默认情况下传给服务端的参数为:offset,limit,sort设置为 ''  在这种情况下传给服务器的参数为：pageSize,pageNumber */
+                queryParams : function(params) {
+                    var storage = window.localStorage;
+                    var map = {
+                        pageNumber: params.pageNumber,//当前页码
+                        pageSize: params.pageSize,//页面大小
+                        customerId:customerId
+                    };
+                    return map;
+                },
+            });
+        }
+
+        Date.prototype.format = function(fmt) {
+            var o = {
+                "M+" : this.getMonth()+1,                 //月份
+                "d+" : this.getDate(),                    //日
+                "h+" : this.getHours(),                   //小时
+                "m+" : this.getMinutes(),                 //分
+                "s+" : this.getSeconds(),                 //秒
+                "q+" : Math.floor((this.getMonth()+3)/3), //季度
+                "S"  : this.getMilliseconds()             //毫秒
+            };
+            if(/(y+)/.test(fmt)) {
+                fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+            }
+            for(var k in o) {
+                if(new RegExp("("+ k +")").test(fmt)){
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+                }
+            }
+            return fmt;
+        }
+    </script>
+</body>
+
+</html>

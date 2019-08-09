@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <title>用户注册</title>
+    <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="asset/jquery-confirm/css/jquery-confirm.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="asset/bootstrap-validator/css/bootstrapValidator.min.css">
+
+    <style>
+
+        /*解决浏览器记住账号密码以后，输入框变黄的问题。*/
+        input:-webkit-autofill,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+        input[type=text]:focus, input[type=password]:focus, textarea:focus {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+        .register{
+            max-width: 600px;
+            margin: auto;
+            padding: 1%;
+        }
+        body {
+            background-color: gainsboro!important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register">
+        <form class="form-horizontal" role="form" id="registerForm">
+            <p class="text-center" style="font-size: 20px;font-weight: 100;">用户注册中心</p>
+
+            <!--PC端注册的账号类型只能为主账号-->
+            <input type="hidden" class="form-control" id="userType" name="userType" value="2">
+
+            <div class="form-group">
+                <label for="userName" class="col-sm-4 control-label">用户账号&nbsp;</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control required" id="userName" name="userName" placeholder="请输入你的用户账号">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="userPassword" class="col-sm-4 control-label">用户密码&nbsp;</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control required"  id="userPassword" name="userPassword" placeholder="请输入您的密码">
+                </div>
+            </div>
+
+            <!--<div class="form-group">
+                <label for="userName" class="col-sm-4 control-label">用户姓名&nbsp;<span style="color: red">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control required"  id="userName" name="userName" placeholder="请输入您的姓名">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber" class="col-sm-4 control-label">手机号&nbsp;<span style="color: red">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control required number"  id="phoneNumber" name="phoneNumber" placeholder="请输入您的手机号">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="companyName" class="col-sm-4 control-label">公司名称&nbsp;<span style="color: red">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control required" id="companyName" name="companyName" placeholder="请输入您的公司名称">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="companyAddress" class="col-sm-4 control-label">公司地址&nbsp;<span style="color: red">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control required" id="companyAddress" name="companyAddress" placeholder="请输入您的公司地址">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="companyScale" class="col-sm-4 control-label">公司规模</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control number" id="companyScale" name="companyScale" placeholder="请输入您的公司规模">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="file" class="col-sm-4 control-label">上传营业执照&nbsp;<span style="color: red">*</span></label>
+                <div class="col-sm-8">
+                    <input type="file" name="file"  id="file" class="file-loading"/>
+                </div>
+            </div>-->
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label"></label>
+                    <div class="col-sm-8">
+                    <button type="button" class="btn btn-info col-sm-3" style="float: right;" onclick="register();">注册</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+    <script src="asset/jquery/jquery-3.2.1.min.js"></script>
+    <script src="asset/bootstrap/js/bootstrap.min.js"></script>
+    <script src="asset/jquery-confirm/js/jquery-confirm.min.js"></script>
+    <script src="asset/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            validator();
+        });
+
+        //  点击注册
+        function register() {
+            var data = $('#registerForm').data("bootstrapValidator");
+            data.validate();
+            if(data.isValid()){
+                $.ajax({
+                    url: "doRegister",
+                    type: "post",
+                    data: $('#registerForm').serialize(),
+                    dataType: "json",
+                    async: false,
+                    success: function (result) {
+                        if(result.code == '0000'){
+                            $.confirm({
+                                title: "注册完成！",
+                                content: "3秒后返回登陆页……",
+                                autoClose: "确定|3000",
+                                buttons: {
+                                    "确定": function () {
+                                        window.location.href="/";
+                                    },
+                                }
+                            });
+                        }else {
+                            $.alert(result.msg);
+                        }
+                    }
+                });
+                
+                
+            }else {
+                $.alert("存在校验未通过项，请检查表单！");
+            }
+
+        }
+
+
+        function validator() {
+            //表单校验
+            $('#registerForm').bootstrapValidator({
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    userName: {
+                        validators: {
+                            notEmpty: {
+                                message: '账号不能为空'
+                            }
+                        }
+                    },
+                    userPassword: {
+                        validators: {
+                            notEmpty: {
+                                message: '密码不能为空'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>

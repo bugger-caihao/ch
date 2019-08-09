@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <title>公司信息编辑</title>
+    <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="asset/jquery-confirm/css/jquery-confirm.min.css" rel="stylesheet" />
+    <style>
+
+        /*解决浏览器记住账号密码以后，输入框变黄的问题。*/
+        input:-webkit-autofill,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+        input[type=text]:focus, input[type=password]:focus, textarea:focus {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+        .edit{
+            max-width: 600px;
+            margin: auto;
+            padding: 1%;
+        }
+        a{
+            color: black!important;
+        }
+        .hover_nav:hover{
+            background: #f2f2f2!important;
+            cursor: pointer!important;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-default" role="navigation" style="background: #ffc0cb;">
+        <div class="container-fluid">
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="hover_nav"><a href="initPage" style="color: #777!important;">系统导航</a></li>
+                    <!--<li class="hover_nav"><a id="companyEdit" href="company" style="color: #777!important;">公司信息编辑</a></li>-->
+                    <li class="hover_nav"><a onclick="go_shop()" style="cursor:pointer;color: #777!important;">谈单管理</a></li>
+                    <li class="hover_nav"><a onclick="go_backstage()" style="cursor:pointer;color: #777!important;">后台管理</a></li>
+                </ul>
+                <ul class="nav navbar-nav" style="float: right;">
+                    <li class="hover_nav"><a href="javascript:logout()" style="color: #777!important;">退出登录</a></li>
+                </ul>
+            </div>
+            <div class="navbar-header" style="margin-left: 25%;">
+                <span class="navbar-brand" id="companyTitle" style="font-size: 200%;font-family: cursive;"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="edit">
+        <form class="form-horizontal" role="form" id="companyForm">
+            <p class="text-center" style="font-size: 20px;font-weight: 100;">公司信息编辑</p>
+
+            <div class="form-group">
+                <label for="companyName" class="col-sm-4 control-label">公司名称<span style="color: red">*</span></label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control required" id="companyName" name="companyName" placeholder="请输入公司名称">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="imgPath" class="col-sm-4 control-label">公司logo<span style="color: red">*</span></label>
+                <div class="col-sm-8">
+                    <input type="file" name="imgPath" id="imgPath" class="file-loading required"/>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="modal-footer">
+            <input type="button" class="btn btn-info col-sm-3" style="float: right;" id="submit" onclick="save()" value="提交" data-loading-text="提交中..."/>
+        </div>
+
+    </div>
+
+    <!-- 按钮触发模态框 -->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times; </button>
+                    <h4 class="modal-title" id="myModalLabel">登记客户信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="customerForm">
+
+                        <div class="form-group">
+                            <label for="customerName" class="col-sm-4 control-label">客户姓名</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="customerName" id="customerName" placeholder="请输入客户姓名" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phoneNumber" class="col-sm-4 control-label">客户电话</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" placeholder="请输入客户电话" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭 </button>
+                    <button type="button" class="btn btn-primary" onclick="submit();">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="asset/jquery/jquery-3.2.1.min.js"></script>
+    <script src="asset/js/navigation.js"></script>
+    <script src="asset/bootstrap/js/bootstrap.min.js"></script>
+    <script src="asset/jquery-confirm/js/jquery-confirm.min.js"></script>
+    <!--文件上传-->
+    <link type="text/css" rel="stylesheet" href="asset/bootstrap-fileinput/css/fileinput.min.css" />
+    <script type="text/javascript" src="asset/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <script type="text/javascript" src="asset/bootstrap-fileinput/js/locales/zh.js"></script>
+    <script src="asset/js/companyInfo.js"></script>
+
+    <script type="text/javascript">
+        var imgArr = [];//公司图片回显数组
+        //获取当前登录用户的公司信息
+        $(function(){
+            $.ajax({
+                type: 'get',
+                cache: false,
+                dataType: 'json',
+                contentType: "application/json",
+                url: 'company/getCompanyInfo',
+                success: function(result){
+                    if (result.status=='000'){
+                        $("#companyName").val(result.data.companyName);
+                        imgArr.push(result.data.imgUrl);
+                        //初始化fileinput
+                        var imgInput = new ImgInput();
+                        imgInput.Init("imgPath");
+                    }else{
+                        $.alert('系统错误，请联系管理员!');
+                        console.log(result.message);
+                    }
+                } ,
+                error: function(){
+                    $.alert('系统错误,请与系统管理员联系!');
+                }
+            });
+        });
+
+        function save(){
+            $("#submit").button('loading');//禁用按钮并显示提交中
+
+            if ($("#companyName").val() == '') {
+                $.alert("请输入公司名称！");
+                return false;
+            }
+            var form = new FormData($("#companyForm")[0]);
+            $.ajax({
+                url:"company/update",
+                type:"post",
+                data:form,
+                processData:false,
+                contentType:false,
+                success:function(result){
+                    if (result.status=='000'){
+                        $.alert("提交成功！");
+                        $.confirm({
+                            title: '提交成功!',
+                            content: '请刷新页面',
+                            buttons: {
+                                '确定': function () {
+                                    location.reload();
+                                }
+                            }
+                        });
+                    }else{
+                        $.alert("提交失败！");
+                        $("#add").button('reset');//重置按钮
+                    }
+                }
+            });
+        };
+
+    </script>
+
+</body>
+
+</html>
