@@ -65,8 +65,8 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper-xml/*.xml
   #  实体类扫描（实体类别名）
   type-aliases-package: com.ch.dto
-  configuration:
-    cache-enabled:
+#  configuration:
+#    cache-enabled:
 
 #  日志配置（SpringBoot 默认使用slf4j + logback日志框架）：
 #  如果项目里要使用logback.xml来配置日志的话，直接在resourse下建一个logback-spring.xml,SpringBoot会自动识别该文件
