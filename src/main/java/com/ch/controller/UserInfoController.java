@@ -154,4 +154,10 @@ public class UserInfoController {
         log.info("账户："+ account + "已退出登陆");
         return ResultUtil.success();
     }
+
+
+    @GetMapping(value = "/hello")
+    public String hello(){
+        return "hello";
+    }
 }

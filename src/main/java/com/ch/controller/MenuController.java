@@ -64,14 +64,16 @@ public class MenuController {
     @GetMapping("/test")
     public Map errorQuerry(@Valid MenuDto menuDto){
         Map map = new HashMap();
-
-
-            PageInfo<Menu> pageInfo = menuService.queryAll(menuDto);
-            map.put("success", true);
-            map.put("rows", pageInfo.getList());
-            map.put("total", pageInfo.getTotal());
-
+        PageInfo<Menu> pageInfo = menuService.queryAll(menuDto);
+        map.put("success", true);
+        map.put("rows", pageInfo.getList());
+        map.put("total", pageInfo.getTotal());
         return map;
+    }
+
+    @GetMapping("/exportExcel")
+    public void exportExcel(){
+        
     }
 
 }

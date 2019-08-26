@@ -58,6 +58,18 @@ spring:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
 
 
+#  thymeleaf:
+#    encoding: utf-8  #  默认
+#    enabled: true #默认开启
+#    mode: HTML5  #默认
+#    suffix: .html  #默认
+#    prefix: classpath:/templates/  #默认
+#    cache: false  #默认为true，在开发阶段通常设为false
+#
+#
+#  messages:
+#    encoding: UTF-8
+#    basename: i18n/hello #默认为messages，这里设置指向 resource 下的 hello 配置文件
 
 
 mybatis-plus:
