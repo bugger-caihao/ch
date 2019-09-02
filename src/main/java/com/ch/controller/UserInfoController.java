@@ -9,6 +9,7 @@ import com.ch.utils.JsonResult;
 import com.ch.utils.MD5Utils;
 import com.ch.utils.ResultUtil;
 import com.ch.utils.ToolUtil;
+import com.google.gson.Gson;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +23,21 @@ import java.util.Map;
  * <p>
  *  前端控制器
  * </p>
- *
+ * value是不会在文档中显示的，没有什么意义，一般不用指定
  * @author caihao
  * @since 2019-07-12
  */
 @Controller
 @Slf4j
-@Api(tags = {"用户操作接口"}) // value是不会在文档中显示的，没有什么意义，一般不用指定
+@Api(tags = {"用户操作接口"})
 public class UserInfoController {
 
     @Autowired
     private IUserInfoService iUserInfoService;
 
-    //  欢迎页
+    /**
+     * 欢迎页
+     */
     @ApiOperation(value = "欢迎请求controller", notes = "项目访问路径：http://localhost:8080/")
     @GetMapping("/")
     public String login(){
@@ -47,7 +50,9 @@ public class UserInfoController {
         return "main";
     }
 
-    //  注册请求，跳转到注册页面
+    /**
+     *注册请求，跳转到注册页面
+     */
     @GetMapping("/register")
     public String register(){
         //  要排除拦截器拦截注册请求
@@ -61,6 +66,7 @@ public class UserInfoController {
      * @Date 2019/7/16 14:53
      * @Param [user]
      * @Return com.ch.utils.JsonResult
+     * @ApiImplicitParam(paramType = "body", name = "user", value = "用户信息对象", required = true, dataType = "UserInfo")
      */
     @PostMapping("/doLogin")
     @ResponseBody
@@ -69,7 +75,6 @@ public class UserInfoController {
             @ApiResponse(code=400,message="请求参数没填好"),
             @ApiResponse(code=404,message="请求路径没有或页面跳转路径不对")
     })
-    //@ApiImplicitParam(paramType = "body", name = "user", value = "用户信息对象", required = true, dataType = "UserInfo")
     public JsonResult<UserInfo> doLogin(@RequestBody @ApiParam(name = "userInfo", value = "user对象", required = true) UserInfo user){
         JsonResult<UserInfo> jsonResult = new JsonResult<>();
         String userPassword = user.getUserPassword();
@@ -156,8 +161,25 @@ public class UserInfoController {
     }
 
 
-    @GetMapping(value = "/hello")
-    public String hello(){
-        return "hello";
+    @GetMapping(value = "/hello/{id}/{flag}")
+    @ResponseBody
+    public String hello(@PathVariable("id") String id, @PathVariable("flag") String flag){
+
+        System.out.println("参数：flag=" + flag);
+        System.out.println("参数：id=" + id);
+        return "这是用 restTemplate 发送的第一个 get 请求";
     }
+
+    @PostMapping("/hello")
+    @ResponseBody
+    public JsonResult postHello(@RequestBody UserInfo user){
+        JsonResult jsonResult = ResultUtil.success();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        System.out.println(json);
+
+        return jsonResult;
+    }
+
+
 }
