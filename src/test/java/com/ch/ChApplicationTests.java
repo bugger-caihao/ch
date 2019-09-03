@@ -21,6 +21,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -195,6 +196,31 @@ public class ChApplicationTests {
         String s1 = gson.toJson(response.getBody());
         System.out.println("响应头： "+s);
         System.out.println("响应体： "+s1);
+    }
+
+    @Test
+    public void test05(){
+        List<String> list = new ArrayList<>();
+        list.add("张三");
+        list.add("李四");
+        list.add("王五");
+        list.add("赵六");
+        String reomveName = "赵六";
+        /*for (String s : list) {
+            if(reomveName.equals(s)){
+                //  for循环在编译的时候，会被默认的编译成遍历器，这里调用的是list的remove()方法，源码中会验证checkForComodification();
+                list.remove(s);
+            }
+        }*/
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()){
+            String next = it.next();
+            if(reomveName.equals(next)){
+                it.remove();
+            }
+        }
+        System.out.println(list);
+
     }
 
 
