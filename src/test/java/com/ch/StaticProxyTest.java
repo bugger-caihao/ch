@@ -1,5 +1,7 @@
 package com.ch;
 
+import com.ch.test.ClothFactory;
+import com.ch.test.Nike;
 import com.ch.test.StaticProxy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +20,8 @@ public class StaticProxyTest {
 
     @Test
     public void test(){
-        StaticProxy staticProxy = new StaticProxy();
-        staticProxy.produceCloth();
+        ClothFactory clothFactory = new StaticProxy(new Nike());
+        clothFactory.produceCloth();
 
     }
 }
