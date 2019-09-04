@@ -1,8 +1,8 @@
 package com.ch;
 
-import com.ch.test.ClothFactory;
-import com.ch.test.Nike;
-import com.ch.test.StaticProxy;
+import com.ch.test.proxy.ClothFactory;
+import com.ch.test.proxy.Nike;
+import com.ch.test.proxy.StaticProxy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

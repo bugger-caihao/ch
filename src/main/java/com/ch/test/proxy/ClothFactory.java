@@ -1,4 +1,4 @@
-package com.ch.test;
+package com.ch.test.proxy;
 
 /**
  * @ClassName: ClothFactory
