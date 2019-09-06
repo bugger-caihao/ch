@@ -6,7 +6,7 @@ import com.ch.entity.Student;
  * @ClassName: IdStrategy
  * @Description: 过滤id＞3的学生
  * @Author: caihao
- * @Date: 2019/9/6 9:48
+ * @Date: 2019/9/6 9:49
  */
 public class IdStrategy implements StrategyInterface {
     @Override
