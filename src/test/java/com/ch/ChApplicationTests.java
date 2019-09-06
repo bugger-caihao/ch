@@ -174,7 +174,7 @@ public class ChApplicationTests {
 
         //  设置 URI 地址
         StringBuffer paramURI = new StringBuffer("http://127.0.0.1:8080/hello");
-        // 字符数据最好encoding一下;这样一来，某些特殊字符才能传过去(如:flag的参数值就是“&”,不encoding的话,传不过去)
+        //  字符数据最好encoding一下;这样一来，某些特殊字符才能传过去(如:flag的参数值就是“&”,不encoding的话,传不过去)
 
         /*String json = gson.toJson(userInfo);
         paramURI.append("/"+URLEncoder.encode(json, "utf-8"));*/
