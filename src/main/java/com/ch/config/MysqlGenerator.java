@@ -89,10 +89,10 @@ public class MysqlGenerator {
         // 包配置
         final PackageConfig pc = new PackageConfig();
         //pc.setModuleName("ch");//pc.setModuleName(scanner("模块名"));
-        pc.setParent("com.ch") .setMapper("mapper")//dao
-                            .setService("service")//servcie
+        pc.setParent("com.ch") .setMapper("mapper")
+                            .setService("service")
                             .setServiceImpl("service.impl")
-                            .setController("controller")//controller
+                            .setController("controller")
                             .setEntity("entity");
                             //.setXml("mapper");//mapper.xml//父包名
         mpg.setPackageInfo(pc);
@@ -148,23 +148,27 @@ public class MysqlGenerator {
         //  自定义的controller模板的路径，如果是设为null，则不生成对应的模板，setController(null),则不生成对应的controller
         //templateConfig.setController("src/main/resources/templates/controller.java.ftl");
 
-        templateConfig.setXml(null);        //  关闭使用默认的模板，启用自定义的XML的模板，
+        //  关闭使用默认的模板，启用自定义的XML的模板
+        templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
+        //数据库表映射到实体的命名策略
+        strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
-        /*strategy.setSuperEntityClass("model");
+        /*
+        strategy.setSuperEntityClass("model");
         strategy.setSuperControllerClass("controller");//要继承的父类的类名
         strategy.setSuperServiceClass("service");
         strategy.setSuperServiceImplClass("serviceImpl");
-        strategy.setSuperMapperClass("dao");*/
+        strategy.setSuperMapperClass("dao");
+        */
         strategy.setEntityTableFieldAnnotationEnable(true);
         strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-        //strategy.setSuperEntityColumns("id");
+        //  strategy.setSuperEntityColumns("id");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");//表名前缀
         mpg.setStrategy(strategy);
