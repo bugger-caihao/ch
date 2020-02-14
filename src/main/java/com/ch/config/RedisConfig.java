@@ -25,7 +25,7 @@ import java.util.Set;
  * @Date: 2019/7/27 20:56
  */
 @Configuration
-//@EnableCaching  //  这里的@EnableCaching项目的主启动类中已经配置了，所以这里不用这个注解可以开启缓存
+//@EnableCaching 这里的@EnableCaching项目的主启动类中已经配置了，所以这里不用这个注解可以开启缓存
 public class RedisConfig {
 
     //  默认的缓存过期时间
@@ -68,10 +68,10 @@ public class RedisConfig {
         configMap.put(userCacheName,defaultCacheConfig.entryTtl(Duration.ofSeconds(userExpireTime)));
 
         RedisCacheManager cacheManager = RedisCacheManager.builder(lettuceConnectionFactory)
-                .cacheDefaults(defaultCacheConfig)
-                .initialCacheNames(cacheNames)
-                .withInitialCacheConfigurations(configMap)
-                .build();
+                                                          .cacheDefaults(defaultCacheConfig)
+                                                          .initialCacheNames(cacheNames)
+                                                          .withInitialCacheConfigurations(configMap)
+                                                          .build();
         return cacheManager;
     }
 

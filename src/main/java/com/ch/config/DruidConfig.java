@@ -20,7 +20,7 @@ import java.util.Properties;
 
 /**
  * @ClassName: DruidConfig
- * @Description: TODO
+ * @Description: druid连接池的配置类
  * @Author: caihao
  * @Date: 2019/7/13 16:15
  */

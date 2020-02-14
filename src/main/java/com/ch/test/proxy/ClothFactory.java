@@ -2,7 +2,7 @@ package com.ch.test.proxy;
 
 /**
  * @ClassName: ClothFactory
- * @Description: TODO
+ * @Description:
  * @Author: caihao
  * @Date: 2019/9/3 16:31
  */

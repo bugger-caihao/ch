@@ -26,7 +26,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Autowired
     private UserInfoMapper mapper;
 
-    //@Cacheable(value = "user") //将方法的返回值放到缓存组件中
+    @Cacheable(value = "user") //将方法的返回值放到缓存组件中
     @Override
     public UserInfo login(UserInfo user) {
         System.out.println("查询用户："+user.getUserName());

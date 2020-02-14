@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @ClassName: MyIntegerceptor
- * @Description: TODO
+ * @Description:
  * @Author: caihao
  * @Date: 2019/6/27 11:34
  */
